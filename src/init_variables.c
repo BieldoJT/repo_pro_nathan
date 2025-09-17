@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_variables.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bieldojt <bieldojt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/01 14:41:18 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/17 12:21:08 by bieldojt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	init_rt(t_rt *rt)
 	rt->intensity = (t_interval){0, 0};
 	interval_init(&rt->t_range, 0.001, INFINITY);
 	interval_init(&rt->intensity, 0.000, 0.999);
-	rt->image_width = 400;
+	rt->image_width = 800;
 	rt->image_height = (int)(rt->image_width / aspect_ratio);
 	rt->mlx = malloc(sizeof(t_mlx));
 	if (rt->image_height < 1)
@@ -33,7 +33,7 @@ void	init_rt(t_rt *rt)
 	init_mlx(rt);
 	rt->camera = init_camera(aspect_ratio, rt->image_width, rt->image_height);
 	rt->camera->count_samples = 0;
-	rt->camera->sample_per_pixel = 128;  //final 128 , preview 64
+	rt->camera->sample_per_pixel = 500;  //final 128 , preview 64
 	rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
 	rt->camera->max_depth = 20; //final 20 , preview 12
 	create_world(rt);
@@ -53,7 +53,10 @@ static void	create_world(t_rt *rt)
 	rt->world[rt->world_size++] = sphere_create(vec3(1.0, 0.0, -1.0), 0.5,
 			dielectric_create(1.8));
 	rt->world[rt->world_size++] = sphere_create(vec3(-1.5, 1.0, 0.5), 0.5,
-			diffuse_light_create(vec3(10.0, 10.0, 10.0)));
+			diffuse_light_create(vec3(50.0, 50.0, 50.0)));
+	rt->n_lights = 1;
+	rt->lights = malloc(sizeof(t_point_light *) * rt->n_lights);
+	rt->lights[0] = point_light_create(vec3(2, 4, 2), vec3(5, 5, 5));
 	/*
 	int i = 5;
 	float aaa = 0.2;
