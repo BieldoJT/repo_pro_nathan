@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bieldojt <bieldojt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/17 10:58:38 by bieldojt         ###   ########.fr       */
+/*   Updated: 2025/09/23 22:46:36 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,9 @@ typedef struct s_camera
 	t_vec3						background_color;
 }								t_camera;
 
+
+
+
 //------------------------------------------------------------------------------
 //|                           RENDER & JANELA                        |
 //------------------------------------------------------------------------------
@@ -202,6 +205,9 @@ typedef struct s_rt
 //|                                  main.c                                    |
 //------------------------------------------------------------------------------
 void							init_rt(t_rt *rt);
+
+
+
 
 //------------------------------------------------------------------------------
 //|                                 render.c                                   |
@@ -289,6 +295,34 @@ t_pdf	pdf_light_sphere_make(void *sphere, t_vec3 origin);
 
 /* Mistura 50/50 de dois PDFs (cosine + light, p.ex.). */
 t_pdf	pdf_mix_make(t_pdf a, t_pdf b);
+
+
+//------------------------------------------------------------------------------
+//|                                 color.c                                    |
+//------------------------------------------------------------------------------
+
+typedef struct s_mis_data
+{
+	t_pdf	pdf_cosine;
+	t_pdf	pdf_light;
+	t_pdf	pdf_mix;
+	t_vec3	sample_d;
+	t_ray	ray_scattered;
+	double	pdf_sample_value;
+	double	pdf_bsdf_value;
+	t_vec3	radiance_child;
+	void	*chosen_light;
+}	t_mis_data;
+
+typedef struct s_trace_data
+{
+	t_hit_record			hit;
+	t_scatter_params		scatter_params;
+	t_vec3					atten;
+	t_ray					ray_next;
+	t_vec3					emission;
+	t_vec3					indirect_radiance;
+}	t_trace_data;
 
 //------------------------------------------------------------------------------
 //|                                 sphere.c                                   |

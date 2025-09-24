@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:13:40 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/22 19:47:44 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/23 22:47:18 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 static int	rr_terminate(t_vec3 *atten)
 {
-	double  probability;
+	double	probability;
 
-	/* prob. de sobrevivência baseada no maior canal da atenuação (clamp) */
 	probability = atten->x;
 	if (atten->y > probability)
 		probability = atten->y;
@@ -51,84 +50,74 @@ static void	*pick_emissive_sphere(t_rt *rt)
 	return (NULL);
 }
 
-/* 1 amostra MIS: mistura cosine + esfera emissiva (se houver) */
+static void	get_values_from_pdf(t_rt *rt, t_hit_record *rec, t_mis_data *data)
+{
+	data->chosen_light = pick_emissive_sphere(rt);
+	data->pdf_cosine = pdf_cosine_make(rec->normal);
+	if (data->chosen_light)
+		data->pdf_light = pdf_light_sphere_make(data->chosen_light, rec->p);
+	else
+		data->pdf_light = pdf_cosine_make(rec->normal);
+	data->pdf_mix = pdf_mix_make(data->pdf_cosine, data->pdf_light);
+	data->sample_d = vec3_unit_vector(data->pdf_mix.generate(&data->pdf_mix));
+	data->ray_scattered = ray(rec->p, data->sample_d);
+	data->pdf_sample_value = data->pdf_mix.value(&data->pdf_mix,
+			data->sample_d);
+}
+
 static t_vec3	estimate_mis(t_rt *rt, const t_ray *r_in,
 				const t_hit_record *rec, int depth)
 {
-	t_pdf	pdf_cosine;
-	t_pdf	pdf_light;
-	t_pdf	pdf_mixed;
-	t_vec3	sample_dir;
-	t_ray	ray_scattered;
-	double	pdf_sample_value;
-	double	pdf_bsdf_value;
-	t_vec3	radiance_child;
-	t_vec3	radiance_estimate;
-	void	*chosen_light;
+	t_mis_data		*data;
+	t_vec3			radiance_estimate;
 
-	chosen_light = pick_emissive_sphere(rt);
-	pdf_cosine = pdf_cosine_make(rec->normal);
-	pdf_light = chosen_light ? pdf_light_sphere_make(chosen_light, rec->p)
-		: pdf_cosine_make(rec->normal);
-	pdf_mixed = pdf_mix_make(pdf_cosine, pdf_light);
-
-	sample_dir = vec3_unit_vector(pdf_mixed.generate(&pdf_mixed));
-	ray_scattered = ray(rec->p, sample_dir);
-	pdf_sample_value = pdf_mixed.value(&pdf_mixed, sample_dir);
-
+	data = (t_mis_data *)malloc(sizeof(t_mis_data));
+	get_values_from_pdf(rt, (t_hit_record *)rec, data);
 	radiance_estimate = vec3(0.0, 0.0, 0.0);
-	if (pdf_sample_value > 0.0)
+	if (data->pdf_sample_value > 0.0)
 	{
 		if (rec->material->scattering_pdf)
-			pdf_bsdf_value = rec->material->scattering_pdf(rec->material, r_in, rec, &sample_dir);
+			data->pdf_bsdf_value = rec->material->scattering_pdf(rec->material,
+					r_in, rec, &data->sample_d);
 		else
-			pdf_bsdf_value = 1.0;
-		radiance_child = ray_color(ray_scattered, rt, depth - 1);
-		radiance_estimate = vec3_mul(radiance_child, pdf_bsdf_value / pdf_sample_value);
+			data->pdf_bsdf_value = 1.0;
+		data->radiance_child = ray_color(data->ray_scattered, rt, depth - 1);
+		radiance_estimate = vec3_mul(data->radiance_child, data->pdf_bsdf_value
+				/data->pdf_sample_value);
 	}
-
-	/* --- CLEANUP para evitar OOM --- */
-	/* Importante: libere na ordem abaixo para não dar double-free */
-	if (pdf_mixed.data)
-		free(pdf_mixed.data);      /* free do 'struct s_pdfm' (wrapper do mix) */
-	if (pdf_cosine.data)
-		free(pdf_cosine.data);      /* free do 'struct s_pdfc' (cosine)        */
-	if (pdf_light.data)
-		free(pdf_light.data);      /* free do 'struct s_pdfls' OU 's_pdfc'    */
+	if (data->pdf_mix.data)
+		free(data->pdf_mix.data);
+	if (data->pdf_cosine.data)
+		free(data->pdf_cosine.data);
+	if (data->pdf_light.data)
+		free(data->pdf_light.data);
+	free(data);
 	return (radiance_estimate);
 }
 
 t_vec3	ray_color(t_ray r, t_rt *rt, int depth)
 {
-	t_hit_record		hit;
-	t_scatter_params	scatter_params;
-	t_vec3				atten;
-	t_ray				ray_next;
-	t_vec3				emission;
-	t_vec3				indirect_radiance;
+	t_trace_data	td;
 
-	scatter_params.r_in = &r;
-	scatter_params.rec = &hit;
-	scatter_params.attenuation = &atten;
-	scatter_params.scattered = &ray_next;
-	scatter_params.is_specular = 0;
-	scatter_params.pdf = 0.0;
+	td.scatter_params.r_in = &r;
+	td.scatter_params.rec = &td.hit;
+	td.scatter_params.attenuation = &td.atten;
+	td.scatter_params.scattered = &td.ray_next;
+	td.scatter_params.is_specular = 0;
+	td.scatter_params.pdf = 0.0;
 	if (depth <= 0)
 		return (vec3(0.0, 0.0, 0.0));
-	if (!hit_world(r, &hit, rt))
+	if (!hit_world(r, &td.hit, rt))
 		return (vec3(0.0, 0.0, 0.0));
-	/* emissão: seu t_material não tem emitted_fn; use color_emited do próprio material */
-	emission = hit.material->color_emited;
-	if (!hit.material->scatter(hit.material, &scatter_params))
-		return (emission);
-	/* Russian Roulette (se você já tem rr_terminate, mantenha; senão remova este if) */
-	if (depth <= 5 && rr_terminate(&atten))
-		return (emission);
-	/* Specular: segue direto sem PDF */
-	if (scatter_params.is_specular)
-		return (vec3_add(emission, vec3_mult_vecs(atten, ray_color(ray_next, rt, depth - 1))));
-	/* Difuso: MIS (cosine + esfera de luz) */
-	indirect_radiance = estimate_mis(rt, &r, &hit, depth);
-	return (vec3_add(emission, vec3_mult_vecs(atten, indirect_radiance)));
+	td.emission = td.hit.material->color_emited;
+	if (!td.hit.material->scatter(td.hit.material, &td.scatter_params))
+		return (td.emission);
+	if (depth <= 5 && rr_terminate(&td.atten))
+		return (td.emission);
+	if (td.scatter_params.is_specular)
+		return (vec3_add(td.emission, vec3_mult_vecs(td.atten,
+					ray_color(td.ray_next, rt, depth - 1))));
+	td.indirect_radiance = estimate_mis(rt, &r, &td.hit, depth);
+	return (vec3_add(td.emission,
+			vec3_mult_vecs(td.atten, td.indirect_radiance)));
 }
-
