@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lambertian.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bieldojt <bieldojt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 17:18:36 by natrodri          #+#    #+#             */
-/*   Updated: 2025/09/17 12:20:44 by bieldojt         ###   ########.fr       */
+/*   Updated: 2025/09/24 02:12:35 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	material_set_lambertian(t_material *mat, t_vec3 albedo)
 	mat->scatter = &lambertian_scatter;
 	mat->scattering_pdf = &lambertian_scattering_pdf;
 	mat->albedo = albedo;
-	mat->fuzz = 0.0;
+	mat->fuzz = 0.2;
 	mat->refractive_index = 1.0;
 	mat->color_emited = vec3(0.0, 0.0, 0.0);
 }

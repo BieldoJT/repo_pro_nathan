@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/24 02:04:41 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/24 03:24:38 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	init_rt(t_rt *rt)
 	rt->camera->sample_per_pixel = 500;
 	rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
 	rt->camera->max_depth = 20;
-	set_ambient(rt, 0.2, vec3(5.0, 5.0, 5.0));
+	set_ambient(rt, 0.6, vec3(1.0, 1.0, 1.0));
 	create_world(rt);
 }
 
@@ -56,11 +56,16 @@ static void	create_world(t_rt *rt)
 	rt->world[rt->world_size++] = sphere_create(vec3(0.0, 0.0, -1.2), 0.5,
 			lambertian_create(vec3(0.1, 0.8, 4.0)));
 	rt->world[rt->world_size++] = sphere_create(vec3(-1.0, 0.0, -1.0), 0.5,
-			metal_create(vec3(0.8, 0.6, 0.2), 0.01));
+			metal_create(vec3(0.8, 0.6, 0.2), 0.05));
 	rt->world[rt->world_size++] = sphere_create(vec3(1.0, 0.0, -1.0), 0.5,
 			dielectric_create(1.8));
-	rt->world[rt->world_size++] = sphere_create(vec3(-1.5, 1.0, 0.5), 1,
-			diffuse_light_create(vec3(50.0, 50.0, 200.0)));
+	/*rt->world[rt->world_size++] = sphere_create(vec3(-1.5, 1.0, 0.5), 0.5,
+			diffuse_light_create(vec3(50.0, 50.0, 50.0)));*/
+	rt->n_lights = 1;
+rt->lights = malloc(sizeof(t_point_light *) * rt->n_lights);
+if (rt->lights)
+    rt->lights[0] = point_light_create(vec3(-1.0, 0.0, 2.5), vec3(50.0, 50.0, 50.0));
+	// rt->lights[1] = point_light_create(vec3(-2.5, 4.0, 0.5), vec3(50.0, 50.0, 250.0));
 	/*rt->n_lights = 1;
 	rt->lights = malloc(sizeof(t_point_light *) * rt->n_lights);
 	rt->lights[0] = point_light_create(vec3(-1.5, 4, 0.5), vec3(5, 5, 5));*/
