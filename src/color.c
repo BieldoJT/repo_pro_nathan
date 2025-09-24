@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:13:40 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/23 22:47:18 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/24 02:02:55 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,20 @@ static t_vec3	estimate_mis(t_rt *rt, const t_ray *r_in,
 	return (radiance_estimate);
 }
 
+static t_vec3	ambient_term(t_rt *rt, const t_hit_record *rec)
+{
+	t_vec3	ia;      /* intensidade ambiente (cor * razão) */
+	t_vec3	out;
+
+	ia = vec3_mul(rt->ambient.color, rt->ambient.ratio);
+	/* usa albedo do material para "tingir" a luz ambiente */
+	out = vec3_mult_vecs(ia, rec->material->albedo);
+	return (out);
+}
+
+
+
+
 t_vec3	ray_color(t_ray r, t_rt *rt, int depth)
 {
 	t_trace_data	td;
@@ -115,9 +129,13 @@ t_vec3	ray_color(t_ray r, t_rt *rt, int depth)
 	if (depth <= 5 && rr_terminate(&td.atten))
 		return (td.emission);
 	if (td.scatter_params.is_specular)
-		return (vec3_add(td.emission, vec3_mult_vecs(td.atten,
-					ray_color(td.ray_next, rt, depth - 1))));
+	{
+	t_vec3 amb = ambient_term(rt, &td.hit);
+	return vec3_add(
+		amb,
+		vec3_add(td.emission, vec3_mult_vecs(td.atten, ray_color(td.ray_next, rt, depth - 1))));
+	}
 	td.indirect_radiance = estimate_mis(rt, &r, &td.hit, depth);
-	return (vec3_add(td.emission,
-			vec3_mult_vecs(td.atten, td.indirect_radiance)));
+	t_vec3 amb = ambient_term(rt, &td.hit);
+	return vec3_add(amb, vec3_add(td.emission, vec3_mult_vecs(td.atten, td.indirect_radiance)));
 }

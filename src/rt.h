@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/23 22:46:36 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/24 02:01:55 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,13 @@ typedef struct s_equation
 	double	disc;
 }	t_equation;
 
+typedef struct s_ambient
+{
+	double	ratio;   /* 0..1 */
+	t_vec3	color;   /* 0..1 */
+}	t_ambient;
+
+
 //------------------------------------------------------------------------------
 //|                                   CÂMERA                                   |
 //------------------------------------------------------------------------------
@@ -181,6 +188,7 @@ typedef struct s_mlx
 	int							endian;
 }								t_mlx;
 
+
 typedef struct s_rt
 {
 	t_mlx						*mlx;
@@ -193,7 +201,10 @@ typedef struct s_rt
 	t_interval					intensity;
 	int							n_lights;
 	t_point_light				**lights;
+	t_ambient					ambient;
 }								t_rt;
+
+void    set_ambient(t_rt *rt, double ratio, t_vec3 color);
 
 /*
 ** =============================================================================
