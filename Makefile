@@ -23,7 +23,6 @@ SRCS = \
 	$(SRC_DIR)/sphere.c \
 	$(SRC_DIR)/hittable.c \
 	$(MAT_DIR)dielectric.c \
-	$(MAT_DIR)difuse_light.c \
 	$(MAT_DIR)lambertian.c \
 	$(MAT_DIR)metal.c \
 	$(CAM_DIR)camera.c \
@@ -32,11 +31,6 @@ SRCS = \
 	$(INTER_DIR)interval.c \
 	$(INTER_DIR)interval_utils.c \
 	$(SRC_DIR)/lights.c \
-	$(MAT_DIR)/pdf_light_sphere.c \
-	$(MAT_DIR)/pdf_light_sphere_utils.c \
-	$(SRC_DIR)/pdf_mix.c \
-	$(SRC_DIR)/pdf_cosine.c \
-	$(SRC_DIR)/onb.c \
 	$(SRC_DIR)/render.c
 
 OBJS = $(SRCS:.c=.o)
