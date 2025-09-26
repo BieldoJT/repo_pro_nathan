@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: natrodri <natrodri@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/24 02:01:55 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/09/26 16:49:17 by natrodri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 # define TRUE 1
 # define FALSE 0
 # define PI 3.1415926535897932385
+# define EPSILON 0.00001
 
 /*
 ** =============================================================================
@@ -146,6 +147,31 @@ typedef struct s_ambient
 	t_vec3	color;   /* 0..1 */
 }	t_ambient;
 
+typedef	struct s_plane
+{
+	t_vec3	point;
+	t_vec3	norma;
+	t_material	*material;
+}	t_plane;
+
+
+typedef	struct	s_cylinder
+{
+	t_vec3		center;	//center the cylidner of the height
+	t_vec3		axis;
+	double		radius;
+	double		height;
+	t_material	*material;
+}	t_cylinder;
+
+// Estrutura para armazenar todas as interseções encontradas
+typedef struct s_intersections
+{
+    double  t[4];    // Um cilindro pode ter no máximo 4 interseções
+    int     count;
+}   t_intersections;
+
+ 
 
 //------------------------------------------------------------------------------
 //|                                   CÂMERA                                   |
@@ -395,6 +421,8 @@ void							material_destroy(t_material *m);
 
 t_point_light	*point_light_create(t_vec3 position, t_vec3 intensity);
 
+
+
 //------------------------------------------------------------------------------
 //|                                 utils.c                                    |
 //------------------------------------------------------------------------------
@@ -403,5 +431,27 @@ double							random_double(void);
 double							random_double_range(double min, double max);
 int								rgb_to_int(int r, int g, int b);
 t_vec3							sample_square(void);
+
+
+//------------------------------------------------------------------------------
+//|                                 cylinder                                   |
+//------------------------------------------------------------------------------
+
+t_hittable	*cylinder_create(t_vec3 center, t_vec3 axis,
+	double *ra_and_he, t_material *mat);
+int	check_cap(t_cylinder *cyl, t_ray r, double t);
+int	bhaskara(double *abc, double *t0, double *t1);
+void	add_intersection(t_intersections *xs, double t);
+void	update_hit(int i, double *closest_t, int *hit_found, t_intersections xs);
+
+//------------------------------------------------------------------------------
+//|                                 plane.c                                    |
+//------------------------------------------------------------------------------
+
+t_hittable	*plane_creat(t_vec3 point, t_vec3 norma, t_material *material);
+
+
+
+
 
 #endif

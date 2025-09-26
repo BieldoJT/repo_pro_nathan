@@ -11,7 +11,6 @@ CAM_DIR = src/camera/
 INTER_DIR = src/interval/
 LIB_DIR = lib
 
-
 LIBFT = $(LIB_DIR)/libft.a
 LIBVEC3 = $(SRC_DIR)/vec3/libvec3.a
 
@@ -31,7 +30,10 @@ SRCS = \
 	$(INTER_DIR)interval.c \
 	$(INTER_DIR)interval_utils.c \
 	$(SRC_DIR)/lights.c \
-	$(SRC_DIR)/render.c
+	$(SRC_DIR)/render.c \
+	$(SRC_DIR)/cylinder/cylinder.c \
+	$(SRC_DIR)/cylinder/utils_cyld.c \
+	$(SRC_DIR)/plane.c
 
 OBJS = $(SRCS:.c=.o)
 
