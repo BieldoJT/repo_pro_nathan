@@ -83,21 +83,19 @@ void add_lights(t_prs_light *lt, t_rt *rt)
         count++;
         tmp = tmp->next;
     }
-
     rt->n_lights = count;
     rt->lights = malloc(sizeof(t_point_light *) * count);
-
     int i = 0;
     while (lt)
     {
         rt->lights[i++] = point_light_create(
-            vec3(lt->pos[0], lt->pos[1], lt->pos[2]),
-            vec3(
-                lt->color[0] / 255.0 * lt->intensity,
-                lt->color[1] / 255.0 * lt->intensity,
-                lt->color[2] / 255.0 * lt->intensity
-            )
-        );
+    		vec3(lt->pos[0], lt->pos[1], lt->pos[2]),
+    		vec3(
+        		lt->color[0],
+        		lt->color[1],
+        		lt->color[2]
+    		)
+		);
         lt = lt->next;
     }
 }
