@@ -32,6 +32,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
+# include "parser_rt/parser.h"
 
 /*
 ** =============================================================================
@@ -241,7 +242,7 @@ void    set_ambient(t_rt *rt, double ratio, t_vec3 color);
 //------------------------------------------------------------------------------
 //|                                  main.c                                    |
 //------------------------------------------------------------------------------
-void							init_rt(t_rt *rt);
+void							init_rt(t_rt *rt, t_scene *scene);
 
 
 

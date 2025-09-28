@@ -18,9 +18,91 @@ void    set_ambient(t_rt *rt, double ratio, t_vec3 color)
     rt->ambient.color = color;
 }
 
-static void	create_world(t_rt *rt);
+static void	create_world(t_rt *rt, t_scene *scene);
 
-void	init_rt(t_rt *rt)
+void add_sphere(t_prs_sphere *sph, t_rt *rt)
+{
+    while (sph)
+    {
+        rt->world[rt->world_size++] = sphere_create(
+            vec3(sph->pos[0], sph->pos[1], sph->pos[2]),
+            sph->radius,
+            lambertian_create(vec3(
+                sph->color[0] / 255.0,
+                sph->color[1] / 255.0,
+                sph->color[2] / 255.0))
+        );
+        sph = sph->next;
+    }   
+}
+
+void add_plane(t_prs_plane *pl, t_rt *rt)
+{
+    while (pl)
+    {
+        rt->world[rt->world_size++] = plane_creat(
+            vec3(pl->pos[0], pl->pos[1], pl->pos[2]),
+            vec3(pl->orientation[0], pl->orientation[1], pl->orientation[2]),
+            lambertian_create(vec3(
+                pl->color[0] / 255.0,
+                pl->color[1] / 255.0,
+                pl->color[2] / 255.0))
+        );
+        pl = pl->next;
+    }
+}
+
+void add_cylinder(t_prs_cylinder *cyl, t_rt *rt)
+{
+    double ra_and_he[2];
+
+    while (cyl)
+    {
+        ra_and_he[0] = cyl->radius;
+        ra_and_he[1] = cyl->height;
+        rt->world[rt->world_size++] = cylinder_create(
+            vec3(cyl->pos[0], cyl->pos[1], cyl->pos[2]),
+            vec3(cyl->orientation[0], cyl->orientation[1], cyl->orientation[2]),
+            ra_and_he,
+            lambertian_create(vec3(
+                cyl->color[0] / 255.0,
+                cyl->color[1] / 255.0,
+                cyl->color[2] / 255.0))
+        );
+        cyl = cyl->next;
+    }
+}
+
+void add_lights(t_prs_light *lt, t_rt *rt)
+{
+    int count = 0;
+    t_prs_light *tmp = lt;
+
+    while (tmp)
+    {
+        count++;
+        tmp = tmp->next;
+    }
+
+    rt->n_lights = count;
+    rt->lights = malloc(sizeof(t_point_light *) * count);
+
+    int i = 0;
+    while (lt)
+    {
+        rt->lights[i++] = point_light_create(
+            vec3(lt->pos[0], lt->pos[1], lt->pos[2]),
+            vec3(
+                lt->color[0] / 255.0 * lt->intensity,
+                lt->color[1] / 255.0 * lt->intensity,
+                lt->color[2] / 255.0 * lt->intensity
+            )
+        );
+        lt = lt->next;
+    }
+}
+
+void	init_rt(t_rt *rt, t_scene *scene)
 {
 	double	aspect_ratio;
 
@@ -33,9 +115,9 @@ void	init_rt(t_rt *rt)
 	interval_init(&rt->intensity, 0.000, 0.999);
 	rt->image_width = 1000;
 	rt->image_height = (int)(rt->image_width / aspect_ratio);
-	rt->mlx = malloc(sizeof(t_mlx));
 	if (rt->image_height < 1)
 		rt->image_height = 1;
+	rt->mlx = malloc(sizeof(t_mlx));
 	init_mlx(rt);
 	rt->camera = init_camera(aspect_ratio, rt->image_width, rt->image_height);
 	rt->camera->count_samples = 0;
@@ -43,37 +125,22 @@ void	init_rt(t_rt *rt)
 	rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
 	rt->camera->max_depth = 20;
 	set_ambient(rt, 0.8, vec3(1.0, 1.0, 1.0));
-	create_world(rt);
+	create_world(rt, scene);
 }
 
-static void	create_world(t_rt *rt)
+static void create_world(t_rt *rt, t_scene *scene)
 {
-	rt->world = malloc(sizeof(t_hittable *) * 20);
-	if (!rt->world)
-		return ;
-	rt->world[rt->world_size++] = sphere_create(vec3(0.0, -100.5, -1.0), 100.0,
-			lambertian_create(vec3(0.8, 0.2, 0.3)));
-	double ra_and_he[2];
-    ra_and_he[0] = 0.3;  // raio
-    ra_and_he[1] = 1.0;  // altura
-
-    rt->world[rt->world_size++] = cylinder_create(
-        vec3(0.0, 0.0, -1.2), // posição (troquei a Y para 0.0 pra ficar no chão)
-        vec3(0, 1, 0),        // direção (eixo y, para cima)
-        ra_and_he,
-        lambertian_create(vec3(1, 1, 1)) // material branco difuso
-    );
-	/*rt->world[rt->world_size++] = sphere_create(vec3(0.0, 0.5, -1.2), 0.5,
-			metal_create(vec3(1, 1, 1), 0.01));*/
-	/*rt->world[rt->world_size++] = sphere_create(vec3(1.0, 0.0, -1.0), 0.5,
-			dielectric_create(2.8));*/
-	rt->n_lights = 2;
- rt->lights = malloc(sizeof(t_point_light *) * rt->n_lights);
-if (rt->lights)
-    rt->lights[0] = point_light_create(vec3(-2.0, 1.0, 0.0), vec3(0.0, 0.0, 255.0));
-	rt->lights[1] = point_light_create(vec3(2.0, 1.0, 0.0), vec3(0.0, 255.0, 0.0));
-	// rt->lights[1] = point_light_create(vec3(-2.5, 4.0, 0.5), vec3(50.0, 50.0, 250.0));
-	/*rt->n_lights = 1;
-	rt->lights = malloc(sizeof(t_point_light *) * rt->n_lights);
-	rt->lights[0] = point_light_create(vec3(-1.5, 4, 0.5), vec3(5, 5, 5));*/
+    rt->world_size = 0;
+    rt->world = malloc(sizeof(t_hittable *) * 20);
+    if (!rt->world)
+        return ;
+    if (scene->spheres)
+        add_sphere(scene->spheres, rt);
+    if (scene->planes)
+        add_plane(scene->planes, rt);
+    if (scene->cylinders)
+        add_cylinder(scene->cylinders, rt);
+    if (scene->lights)
+        add_lights(scene->lights, rt);
 }
+

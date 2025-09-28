@@ -12,14 +12,18 @@
 
 #include "rt.h"
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_rt	*rt;
+	t_scene	scene;
 
+	if (ac != 2)
+		return (printf("number arguments invalid"), 1);
 	rt = malloc(sizeof(t_rt));
 	if (!rt)
 		return (1);
-	init_rt(rt);
+	parser_rt(av[1], &scene);
+	init_rt(rt, &scene);
 	render_rt(rt);
 	return (0);
 }

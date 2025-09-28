@@ -6,9 +6,11 @@ MINILIBX_FLAGS = -Lminilibx-linux -lmlx_Linux -lX11 -lXext -lm -lpthread -O2
 MINILIBX = make_minilibx
 
 SRC_DIR = src
-MAT_DIR = src/material/
-CAM_DIR = src/camera/
-INTER_DIR = src/interval/
+MAT_DIR = $(SRC_DIR)/material/
+CAM_DIR = $(SRC_DIR)/camera/
+INTER_DIR = $(SRC_DIR)/interval/
+CYL_DIR = $(SRC_DIR)/cylinder/
+PARSER_DIR = $(SRC_DIR)/parser_rt/
 LIB_DIR = lib
 
 LIBFT = $(LIB_DIR)/libft.a
@@ -31,9 +33,17 @@ SRCS = \
 	$(INTER_DIR)interval_utils.c \
 	$(SRC_DIR)/lights.c \
 	$(SRC_DIR)/render.c \
-	$(SRC_DIR)/cylinder/cylinder.c \
-	$(SRC_DIR)/cylinder/utils_cyld.c \
-	$(SRC_DIR)/plane.c
+	$(CYL_DIR)cylinder.c \
+	$(CYL_DIR)utils_cyld.c \
+	$(SRC_DIR)/plane.c \
+	$(PARSER_DIR)free.c \
+	$(PARSER_DIR)ft_atof.c \
+	$(PARSER_DIR)parser.c \
+	$(PARSER_DIR)utils.c \
+	$(PARSER_DIR)world_params.c \
+	$(PARSER_DIR)objects_params.c \
+	$(PARSER_DIR)gnl/get_next_line.c \
+	$(PARSER_DIR)gnl/get_next_line_utils.c \
 
 OBJS = $(SRCS:.c=.o)
 
@@ -42,7 +52,7 @@ all: $(NAME)
 $(NAME): $(OBJS) $(LIBFT) $(LIBVEC3) $(MINILIBX)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LIBVEC3) $(MINILIBX_FLAGS) -o $(NAME)
 	@clear
-	@echo "✅ ${NAME} is compiled."
+	@echo "✅ $(NAME) is compiled."
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -54,7 +64,7 @@ $(LIBVEC3):
 	@make -C $(SRC_DIR)/vec3
 
 make_minilibx:
-		make -C minilibx-linux/
+	@make -C minilibx-linux
 
 val:
 	@clear
@@ -67,7 +77,7 @@ run: all
 clean:
 	@make -C $(LIB_DIR) clean
 	@make -C $(SRC_DIR)/vec3 clean
-	@make -C minilibx-linux/ clean
+	@make -C minilibx-linux clean
 	@rm -f $(OBJS)
 	@clear
 	@echo "🗑️ Objects removed."
@@ -80,3 +90,4 @@ fclean: clean
 	@echo "🗑️ Program and objects removed."
 
 re: fclean all
+
