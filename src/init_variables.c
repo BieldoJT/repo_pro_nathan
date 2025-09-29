@@ -117,11 +117,11 @@ void	init_rt(t_rt *rt, t_scene *scene)
 		rt->image_height = 1;
 	rt->mlx = malloc(sizeof(t_mlx));
 	init_mlx(rt);
-	rt->camera = init_camera(aspect_ratio, rt->image_width, rt->image_height);
-	rt->camera->count_samples = 0;
-	rt->camera->sample_per_pixel = 500;
-	rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
-	rt->camera->max_depth = 20;
+	rt->camera = init_camera(&scene->camera, aspect_ratio, rt->image_width, rt->image_height);
+    rt->camera->count_samples = 0;
+    rt->camera->sample_per_pixel = 500;
+    rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
+    rt->camera->max_depth = 20;
 	set_ambient(rt, 0.8, vec3(1.0, 1.0, 1.0));
 	create_world(rt, scene);
 }

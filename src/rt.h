@@ -194,6 +194,8 @@ typedef struct s_camera
 	double						pixel_sample_scale;
 	int							max_depth;
 	t_vec3						background_color;
+	int							img_width;
+	int							img_height;
 }								t_camera;
 
 
@@ -266,11 +268,10 @@ int								destroy_in_esc(int keycode, t_mlx *mlx);
 //------------------------------------------------------------------------------
 //|                                 camera.c                                   |
 //------------------------------------------------------------------------------
-t_camera						*init_camera(double aspect_ratio, \
-									int image_width, int image_height);
+t_camera *init_camera(t_prs_camera *prs_cam, double aspect_ratio,
+	int image_width, int image_height);
 void							destroy_camera(t_camera *camera);
-t_vec3							get_pixel_center(t_camera *camera, int i, int j,
-									t_vec3 pixel00);
+t_vec3							get_pixel_center(t_camera *cam, int i, int j);
 t_ray							get_ray(const t_camera *cam, int i, int j,
 									int *sample_index);
 t_vec3							get_pixel00(t_camera *camera);
@@ -450,9 +451,5 @@ void	update_hit(int i, double *closest_t, int *hit_found, t_intersections xs);
 //------------------------------------------------------------------------------
 
 t_hittable	*plane_creat(t_vec3 point, t_vec3 norma, t_material *material);
-
-
-
-
 
 #endif
