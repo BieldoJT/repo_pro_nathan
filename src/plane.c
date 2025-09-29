@@ -12,6 +12,21 @@
 
 #include "rt.h"
 
+void	add_checkerboard(t_hit_record *rec)
+{
+	double	square_size;
+	int		x;
+	int		z;
+
+    square_size = 1.0;
+    x = floor(rec->p.x / square_size);
+    z = floor(rec->p.z / square_size);
+    if ((x + z) % 2 == 0)
+       	rec->material->albedo = vec3(1.0, 1.0, 1.0);
+   	else
+        rec->material->albedo = vec3(0.0, 0.0, 0.0);
+}
+
 int	plane_hit(void *obj, t_ray r, t_interval t_range, t_hit_record *rec)
 {
 	t_plane	*pl;
@@ -20,6 +35,7 @@ int	plane_hit(void *obj, t_ray r, t_interval t_range, t_hit_record *rec)
 	double	t;
 
 	pl = (t_plane *)obj;
+	pl->material->checkerboard = 1;
 	denomi = vec3_dot(r.dir, pl->norma);
 	if (fabs(denomi) < 1e-6)
 		return (0);
@@ -31,6 +47,8 @@ int	plane_hit(void *obj, t_ray r, t_interval t_range, t_hit_record *rec)
 	rec->p = ray_at(r, t);
 	rec->material = pl->material;
 	set_face_normal(rec, r, pl->norma);
+	if (pl->material->checkerboard)
+		add_checkerboard(rec);
 	return (1);
 }
 

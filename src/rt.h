@@ -93,6 +93,7 @@ typedef struct s_material
 	double						fuzz;
 	double						refractive_index;
 	t_vec3						color_emited;
+	int							checkerboard;
 }								t_material;
 
 //------------------------------------------------------------------------------
