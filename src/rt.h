@@ -216,6 +216,7 @@ typedef struct s_mlx
 	int							bits_per_pixel;
 	int							line_length;
 	int							endian;
+	t_scene						*scene;
 }								t_mlx;
 
 
@@ -254,7 +255,7 @@ void							init_rt(t_rt *rt, t_scene *scene);
 //|                                 render.c                                   |
 //------------------------------------------------------------------------------
 //void							render_rt(t_rt *rt);
-void	render_rt(t_rt *rt); // no anti-aliasing
+void	render_rt(t_rt *rt, t_scene *scene); // no anti-aliasing
 t_vec3							ray_color(t_ray r, t_rt *rt, int depth);
 
 //------------------------------------------------------------------------------

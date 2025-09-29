@@ -24,6 +24,6 @@ int	main(int ac, char **av)
 		return (1);
 	parser_rt(av[1], &scene);
 	init_rt(rt, &scene);
-	render_rt(rt);
+	render_rt(rt, &scene);
 	return (0);
 }

@@ -136,11 +136,12 @@ int render_loop(t_rt *rt)
 		return 0;
 }
 
-void	render_rt(t_rt *rt)
+void	render_rt(t_rt *rt, t_scene *scene)
 {
 	t_mlx	*mlx;
 
 	mlx = rt->mlx;
+	mlx->scene = scene;
 	ft_printf("Rendering image (multithread)...\n");
 	//render_parallel(rt);
 	ft_printf("Done.\n");

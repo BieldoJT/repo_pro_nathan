@@ -34,6 +34,7 @@ int	destroy(t_mlx *mlx)
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx_destroy_display(mlx->mlx_ptr);
+	all_free(mlx->scene);
 	free(mlx->mlx_ptr);
 	free(mlx);
 	exit(0);
