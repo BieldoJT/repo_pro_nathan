@@ -35,7 +35,7 @@ int	plane_hit(void *obj, t_ray r, t_interval t_range, t_hit_record *rec)
 	double	t;
 
 	pl = (t_plane *)obj;
-	pl->material->checkerboard = 1;
+	pl->material->checkerboard = 0;
 	denomi = vec3_dot(r.dir, pl->norma);
 	if (fabs(denomi) < 1e-6)
 		return (0);
