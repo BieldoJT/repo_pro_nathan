@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 22:14:11 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/02 14:22:35 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -456,6 +456,6 @@ void	update_hit(int i, double *closest_t, int *hit_found, t_intersections xs);
 
 t_hittable	*plane_creat(t_vec3 point, t_vec3 norma, t_material *material);
 
-void free_world(t_hittable **world);
+void free_world(t_rt *rt);
 
 #endif

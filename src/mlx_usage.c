@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:04:00 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/02 11:07:11 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/02 14:35:23 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,22 @@ void free_create_lights(t_rt *rt)
 	free(lights);
 }
 
-void free_world(t_hittable **world)
+void free_world(t_rt *rt)
 {
     int	i;
 
-    if (!world)
-        return ;
     i = 0;
-    while (world[i])
+    if (!rt->world)
+        return ;
+    while (i < rt->world_size)
     {
-		if(world[i]->type == 'c')
-			free(world[i]->obj);
-		free(world[i]->material);
-        free(world[i]);
+		if(rt->world[i]->type == 'c')
+			free(rt->world[i]->obj);
+		free(rt->world[i]->material);
+        free(rt->world[i]);
         i++;
     }
-    free(world);
+    free(rt->world);
 }
 
 void	init_mlx(t_rt *rt)
@@ -68,7 +68,7 @@ int	destroy(t_rt *rt)
 
 	mlx = rt->mlx;
 	free(rt->camera);
-	free_world(rt->world);
+	free_world(rt);
 	free_create_lights(rt);
 
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img);

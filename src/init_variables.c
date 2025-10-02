@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/02 11:45:56 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/02 14:35:36 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,14 @@ void	init_rt(t_rt *rt, t_scene *scene)
 	rt->intensity = (t_interval){0, 0};
 	interval_init(&rt->t_range, 0.001, INFINITY);
 	interval_init(&rt->intensity, 0.000, 0.999);
-	rt->image_width = 1000;
+	rt->image_width = 100;
 	rt->image_height = (int)(rt->image_width / aspect_ratio);
 	if (rt->image_height < 1)
 		rt->image_height = 1;
 	init_mlx(rt);
 	rt->camera = init_camera(&scene->camera, aspect_ratio, rt->image_width, rt->image_height);
     rt->camera->count_samples = 0;
-    rt->camera->sample_per_pixel = 500;
+    rt->camera->sample_per_pixel = 10;
     rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
     rt->camera->max_depth = 50;
 	set_ambient(rt, 0.0, vec3(1.0, 1.0, 1.0));
