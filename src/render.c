@@ -79,7 +79,7 @@ static void	*rt_worker(void *arg)
 	t_job	*job;
 	int		j;
 	int		i;
-	int		color;
+
 
 	job = (t_job *)arg;
 	j = job->y0;
@@ -88,8 +88,8 @@ static void	*rt_worker(void *arg)
 		i = 0;
 		while (i < job->rt->image_width)
 		{
-			color = anti_aliasing_get_color(job->rt, i, j);
-			my_mlx_pixel_put(job->rt->mlx, i, j, color);
+			job->rt->image_index[j][i] = anti_aliasing_get_color(job->rt, i, j);
+			//my_mlx_pixel_put(job->rt->mlx, i, j, color);
 			i++;
 		}
 		j++;
@@ -99,6 +99,7 @@ static void	*rt_worker(void *arg)
 
 static void	render_parallel(t_rt *rt)
 {
+	//h t y
 	pthread_t	th[NTHREADS];
 	t_job		jobs[NTHREADS];
 	int			h;
@@ -121,9 +122,25 @@ static void	render_parallel(t_rt *rt)
 	}
 	while (t--)
 		pthread_join(th[t], NULL);
-	mlx_put_image_to_window(rt->mlx->mlx_ptr, rt->mlx->win_ptr, rt->mlx->img, 0, 0);
-}
+	}
 
+void int_to_img(t_rt *rt)
+{
+	int j;
+	int i;
+
+	j = 0;
+	while (j < rt->image_height)
+	{
+		i = 0;
+		while (i < rt->image_width)
+		{
+			my_mlx_pixel_put(rt->mlx, i, j, rt->image_index[j][i]);
+			i++;
+		}
+		j++;
+	}
+}
 
 
 int render_loop(t_rt *rt)
@@ -136,9 +153,11 @@ int render_loop(t_rt *rt)
 	if (rt->camera->count_samples < rt->camera->sample_per_pixel)
 	{
 		render_parallel(rt);
+		int_to_img(rt);
+		mlx_put_image_to_window(rt->mlx->mlx_ptr, rt->mlx->win_ptr, rt->mlx->img, 0, 0);
 		rt->camera->count_samples++;
 		ft_printf("Rendering... %d samples per pixel.\n",
-			rt->camera->count_samples);
+		rt->camera->count_samples);
 	}
 		return 0;
 }

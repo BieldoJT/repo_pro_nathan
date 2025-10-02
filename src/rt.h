@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/02 14:22:35 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/02 15:18:37 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,7 @@ typedef struct s_mlx
 typedef struct s_rt
 {
 	t_mlx						*mlx;
+	int							**image_index;
 	t_camera					*camera;
 	int							image_width;
 	int							image_height;
