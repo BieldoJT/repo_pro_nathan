@@ -6,19 +6,21 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:04:00 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 22:11:34 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/02 11:07:11 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-void free_create_lights(t_point_light **lights)
+void free_create_lights(t_rt *rt)
 {
+	t_point_light **lights = rt->lights;
 	int i = 0;
 
-	if (!lights)
+	if (!rt->n_lights)
 		return ;
-	while (lights[i])
+	while (i < rt->n_lights)
 	{
+
 		free(lights[i]);
 		i++;
 	}
@@ -67,7 +69,7 @@ int	destroy(t_rt *rt)
 	mlx = rt->mlx;
 	free(rt->camera);
 	free_world(rt->world);
-	free_create_lights(rt->lights);
+	free_create_lights(rt);
 
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
