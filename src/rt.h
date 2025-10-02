@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 22:10:03 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:14:11 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,6 @@ typedef struct s_rt
 	int							n_lights;
 	t_point_light				**lights;
 	t_ambient					ambient;
-	int							rendered;
-	int							freed;
 }								t_rt;
 
 void    set_ambient(t_rt *rt, double ratio, t_vec3 color);

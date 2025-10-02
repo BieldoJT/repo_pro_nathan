@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 21:51:45 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:29:49 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,11 +122,9 @@ void	init_rt(t_rt *rt, t_scene *scene)
     rt->camera->count_samples = 0;
     rt->camera->sample_per_pixel = 10;
     rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
-    rt->camera->max_depth = 20;
-	set_ambient(rt, 0.01, vec3(255.0, 255.0, 255.0));
+    rt->camera->max_depth = 12;
+	set_ambient(rt, 0.8, vec3(1.0, 1.0, 1.0));
 	create_world(rt, scene);
-    rt->rendered = 0;
-    rt->freed = 0;
 }
 
 

@@ -130,7 +130,6 @@ int render_loop(t_rt *rt)
 {
 	if (rt->camera->count_samples >= rt->camera->sample_per_pixel)
 	{
-		rt->rendered = 1;
 		ft_printf("Rendering complete.\r");
 		return 0;
 	}
