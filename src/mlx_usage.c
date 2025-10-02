@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:04:00 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 20:48:49 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:11:34 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void free_world(t_hittable **world)
     i = 0;
     while (world[i])
     {
-        free(world[i]->obj);
-        free(world[i]->hit);
+		if(world[i]->type == 'c')
+			free(world[i]->obj);
 		free(world[i]->material);
         free(world[i]);
         i++;

@@ -61,6 +61,7 @@ t_hittable	*plane_creat(t_vec3 point, t_vec3 norma, t_material *material)
 	if (!ht)
 		return (NULL);
 	pl = (t_plane *)(ht + 1);
+	ht->type = 'p';
 	ht->obj = pl;
 	ht->material = material;
 	pl->point = point;

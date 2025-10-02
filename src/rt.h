@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 20:36:23 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:10:03 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef struct s_hit_record
 
 typedef struct s_hittable
 {
+	char		type;
 	void		*obj;
 	int			(*hit)(void *object, t_ray r, t_interval, t_hit_record *rec);
 	t_material	*material;

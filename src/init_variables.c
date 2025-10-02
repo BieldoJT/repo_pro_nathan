@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/01 20:26:31 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/01 21:51:45 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	init_rt(t_rt *rt, t_scene *scene)
 	aspect_ratio = 16.0 / 9.0;
 	rt->mlx = NULL;
 	rt->world_size = 0;
+    rt->world = NULL;
 	rt->t_range = (t_interval){0, 0};
 	rt->intensity = (t_interval){0, 0};
 	interval_init(&rt->t_range, 0.001, INFINITY);
