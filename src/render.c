@@ -124,12 +124,20 @@ static void	render_parallel(t_rt *rt)
 	mlx_put_image_to_window(rt->mlx->mlx_ptr, rt->mlx->win_ptr, rt->mlx->img, 0, 0);
 }
 
+
+
 int render_loop(t_rt *rt)
 {
-	render_parallel(rt);
-	rt->camera->count_samples++;
+	if (rt->camera->count_samples >= rt->camera->sample_per_pixel)
+	{
+		rt->rendered = 1;
+		ft_printf("Rendering complete.\r");
+		return 0;
+	}
 	if (rt->camera->count_samples < rt->camera->sample_per_pixel)
 	{
+		render_parallel(rt);
+		rt->camera->count_samples++;
 		ft_printf("Rendering... %d samples per pixel.\n",
 			rt->camera->count_samples);
 	}
@@ -144,10 +152,9 @@ void	render_rt(t_rt *rt, t_scene *scene)
 	mlx->scene = scene;
 	ft_printf("Rendering image (multithread)...\n");
 	//render_parallel(rt);
-	ft_printf("Done.\n");
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
 	mlx_loop_hook(mlx->mlx_ptr, render_loop, rt);
-	mlx_key_hook(mlx->win_ptr, destroy_in_esc, mlx);
-	mlx_hook(mlx->win_ptr, 17, 0, destroy, mlx);
+	mlx_key_hook(mlx->win_ptr, destroy_in_esc, rt);
+	mlx_hook(mlx->win_ptr, 17, 0, destroy, rt);
 	mlx_loop(mlx->mlx_ptr);
+	//mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, 0, 0);
 }

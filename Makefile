@@ -1,7 +1,7 @@
 NAME = rt
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -O3
 MINILIBX_FLAGS = -Lminilibx-linux -lmlx_Linux -lX11 -lXext -lm -lpthread -O2
 MINILIBX = make_minilibx
 
@@ -51,7 +51,6 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(LIBVEC3) $(MINILIBX)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LIBVEC3) $(MINILIBX_FLAGS) -o $(NAME)
-	@clear
 	@echo "✅ $(NAME) is compiled."
 
 .c.o:

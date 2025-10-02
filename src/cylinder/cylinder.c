@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cylinder.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natrodri <natrodri@student.42.rio>         +#+  +:+       +#+        */
+/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/26 16:37:59 by natrodri         ###   ########.fr       */
+/*   Updated: 2025/10/01 20:48:23 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ t_hittable	*cylinder_create(t_vec3 center, t_vec3 axis,
 	cylinder_data->height = ra_and_he[1];
 	cylinder_data->material = mat;
 	hittable_obj->obj = cylinder_data;
+	hittable_obj->material = mat;
 	hittable_obj->hit = (int (*)(void *, t_ray, t_interval,
 				t_hit_record *))hit_cylinder;
 	return (hittable_obj);

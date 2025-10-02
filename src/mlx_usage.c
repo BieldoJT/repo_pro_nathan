@@ -3,14 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_usage.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natrodri <natrodri@student.42.rio>         +#+  +:+       +#+        */
+/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:04:00 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/07/18 18:20:08 by natrodri         ###   ########.fr       */
+/*   Updated: 2025/10/01 20:48:49 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+void free_create_lights(t_point_light **lights)
+{
+	int i = 0;
+
+	if (!lights)
+		return ;
+	while (lights[i])
+	{
+		free(lights[i]);
+		i++;
+	}
+	free(lights);
+}
+
+void free_world(t_hittable **world)
+{
+    int	i;
+
+    if (!world)
+        return ;
+    i = 0;
+    while (world[i])
+    {
+        free(world[i]->obj);
+        free(world[i]->hit);
+		free(world[i]->material);
+        free(world[i]);
+        i++;
+    }
+    free(world);
+}
 
 void	init_mlx(t_rt *rt)
 {
@@ -29,22 +60,30 @@ void	init_mlx(t_rt *rt)
 	rt->mlx = mlx;
 }
 
-int	destroy(t_mlx *mlx)
+int	destroy(t_rt *rt)
 {
+	t_mlx	*mlx;
+
+	mlx = rt->mlx;
+	free(rt->camera);
+	free_world(rt->world);
+	free_create_lights(rt->lights);
+
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx_destroy_display(mlx->mlx_ptr);
 	all_free(mlx->scene);
 	free(mlx->mlx_ptr);
 	free(mlx);
+	free(rt);
 	exit(0);
 	return (0);
 }
 
-int	destroy_in_esc(int keycode, t_mlx *mlx)
+int	destroy_in_esc(int keycode, t_rt *rt)
 {
 	if (keycode == ESC)
-		destroy(mlx);
+		destroy(rt);
 	return (0);
 }
 

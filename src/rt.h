@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natrodri <natrodri@student.42.rio>         +#+  +:+       +#+        */
+/*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:17:55 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/26 16:49:17 by natrodri         ###   ########.fr       */
+/*   Updated: 2025/10/01 20:36:23 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ typedef struct s_hittable
 {
 	void		*obj;
 	int			(*hit)(void *object, t_ray r, t_interval, t_hit_record *rec);
+	t_material	*material;
 }	t_hittable;
 
 typedef struct s_sphere
@@ -173,7 +174,7 @@ typedef struct s_intersections
     int     count;
 }   t_intersections;
 
- 
+
 
 //------------------------------------------------------------------------------
 //|                                   CÂMERA                                   |
@@ -233,6 +234,8 @@ typedef struct s_rt
 	int							n_lights;
 	t_point_light				**lights;
 	t_ambient					ambient;
+	int							rendered;
+	int							freed;
 }								t_rt;
 
 void    set_ambient(t_rt *rt, double ratio, t_vec3 color);
@@ -264,8 +267,8 @@ t_vec3							ray_color(t_ray r, t_rt *rt, int depth);
 void							init_mlx(t_rt *rt);
 void							my_mlx_pixel_put(t_mlx *mlx, int x, int y, \
 									int color);
-int								destroy(t_mlx *mlx);
-int								destroy_in_esc(int keycode, t_mlx *mlx);
+int								destroy(t_rt *rt);
+int								destroy_in_esc(int keycode, t_rt *rt);
 
 //------------------------------------------------------------------------------
 //|                                 camera.c                                   |
@@ -453,5 +456,7 @@ void	update_hit(int i, double *closest_t, int *hit_found, t_intersections xs);
 //------------------------------------------------------------------------------
 
 t_hittable	*plane_creat(t_vec3 point, t_vec3 norma, t_material *material);
+
+void free_world(t_hittable **world);
 
 #endif
