@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:13:40 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/09/24 04:36:31 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/03 11:30:54 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ static t_vec3	ambient_term(t_rt *rt, const t_hit_record *rec)
 	ia = vec3_mul(rt->ambient.color, rt->ambient.ratio);
 	/* usa albedo do material para "tingir" a luz ambiente */
 	out = vec3_mult_vecs(ia, rec->material->albedo);
+
 	return (out);
 }
 
@@ -103,7 +104,8 @@ t_vec3	ray_color(t_ray r, t_rt *rt, int depth)
 		return (td.emission);
 	if (depth <= 5 && rr_terminate(&td.atten))
 		return (td.emission);
-	t_vec3 amb = ambient_term(rt, &td.hit);
+	int first_bounce = (depth == rt->camera->max_depth);
+	t_vec3 amb = first_bounce ? ambient_term(rt, &td.hit) : vec3(0,0,0);
 t_vec3 direct = vec3(0.0, 0.0, 0.0);
 int li = 0;
 while (li < rt->n_lights)

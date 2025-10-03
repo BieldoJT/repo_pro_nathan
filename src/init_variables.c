@@ -6,7 +6,7 @@
 /*   By: gda-conc <gda-conc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:50:38 by gda-conc          #+#    #+#             */
-/*   Updated: 2025/10/02 16:03:48 by gda-conc         ###   ########.fr       */
+/*   Updated: 2025/10/03 11:53:37 by gda-conc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void    set_ambient(t_rt *rt, double ratio, t_vec3 color)
 {
     rt->ambient.ratio = ratio;
-    rt->ambient.color = color;
+    rt->ambient.color = vec3_mul(color, 1.0 / 255.0);
 }
 
 static void	create_world(t_rt *rt, t_scene *scene);
@@ -27,10 +27,7 @@ void add_sphere(t_prs_sphere *sph, t_rt *rt)
         rt->world[rt->world_size++] = sphere_create(
             vec3(sph->pos[0], sph->pos[1], sph->pos[2]),
             sph->radius,
-            lambertian_create(vec3(
-                sph->color[0] / 255.0,
-                sph->color[1] / 255.0,
-                sph->color[2] / 255.0))
+            dielectric_create(1.8)
         );
         sph = sph->next;
     }
@@ -64,10 +61,7 @@ void add_cylinder(t_prs_cylinder *cyl, t_rt *rt)
             vec3(cyl->pos[0], cyl->pos[1], cyl->pos[2]),
             vec3(cyl->orientation[0], cyl->orientation[1], cyl->orientation[2]),
             ra_and_he,
-            lambertian_create(vec3(
-                cyl->color[0] / 255.0,
-                cyl->color[1] / 255.0,
-                cyl->color[2] / 255.0))
+            dielectric_create(3.5)
         );
         cyl = cyl->next;
     }
@@ -117,7 +111,7 @@ void init_index_image(t_rt *rt)
         j = 0;
         while (j < rt->image_width)
         {
-            rt->image_index[i][j] = 0; // Initialize pixel to black
+            rt->image_index[i][j] = 0;
             j++;
         }
         i++;
@@ -136,7 +130,7 @@ void	init_rt(t_rt *rt, t_scene *scene)
 	rt->intensity = (t_interval){0, 0};
 	interval_init(&rt->t_range, 0.001, INFINITY);
 	interval_init(&rt->intensity, 0.000, 0.999);
-	rt->image_width = 600;
+	rt->image_width = 500;
 	rt->image_height = (int)(rt->image_width / aspect_ratio);
 	if (rt->image_height < 1)
 		rt->image_height = 1;
@@ -147,7 +141,7 @@ void	init_rt(t_rt *rt, t_scene *scene)
     rt->camera->sample_per_pixel = 500;
     rt->camera->pixel_sample_scale = 1.0 / rt->camera->sample_per_pixel;
     rt->camera->max_depth = 50;
-	set_ambient(rt, 0.0, vec3(1.0, 1.0, 1.0));
+	set_ambient(rt, 0.5, vec3(255.0, 255.0, 255.0));
 	create_world(rt, scene);
 }
 
